@@ -5,17 +5,28 @@ import PackageDescription
 
 let package = Package(
     name: "DrivenInterpreter",
+    platforms: [
+        .macOS(.v10_15),
+        .iOS(.v16)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "DrivenInterpreter",
             targets: ["DrivenInterpreter"]),
     ],
+    dependencies: [
+      .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.2"),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "DrivenInterpreter"),
+            name: "DrivenInterpreter",
+            dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax")
+            ]
+        ),
         .testTarget(
             name: "DrivenInterpreterTests",
             dependencies: ["DrivenInterpreter"]),
