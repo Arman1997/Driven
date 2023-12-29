@@ -1,12 +1,12 @@
 import SwiftSyntax
 import SwiftParser
 
-protocol WidgetDecoding {
-    func decode(from code: String) throws -> WidgetDeclaration
+protocol WidgetMetadataDecoding {
+    func decode(from code: String) throws -> Metadata
 }
 
-struct WidgetDecoder: WidgetDecoding {
-    func decode(from code: String) throws -> WidgetDeclaration {
+struct WidgetMetadataDecoder: WidgetMetadataDecoding {
+    func decode(from code: String) throws -> Metadata {
         try widgetDeclaration(
             from: try declarationSyntax(
                 in: try mainCodeBlock(
@@ -19,7 +19,7 @@ struct WidgetDecoder: WidgetDecoding {
     }
 }
 
-extension WidgetDecoder{
+extension WidgetMetadataDecoder{
     func sourceFileSyntax(of code: String) -> SourceFileSyntax {
         Parser.parse(source: code)
     }
@@ -51,7 +51,7 @@ extension WidgetDecoder{
         return funcCallSyntax
     }
     
-    func widgetDeclaration(from declarationSyntax: FunctionCallExprSyntax) throws -> WidgetDeclaration {
+    func widgetDeclaration(from declarationSyntax: FunctionCallExprSyntax) throws -> Metadata {
         guard let declarationParts = declarationSyntax
             .calledExpression
             .as(DeclReferenceExprSyntax.self)
@@ -59,24 +59,19 @@ extension WidgetDecoder{
             throw Error.declarationReferenceNotFound
         }
         
-        if let closureExpr = declarationSyntax.trailingClosure {
-            return WidgetComposition(
-                metadata: WidgetComposition.Metadata(
-                    declarationMetadata: WidgetDeclaration.Metadata(
-                        token: token(from: declarationParts),
-                        directArguments: try arguments(from: declarationSyntax.arguments)
-                    ),
-                    components: try findComponents(in: closureExpr)
-                )
-            )
-        } else {
-            return WidgetDeclaration(
-                metadata: WidgetDeclaration.Metadata(
-                    token: token(from: declarationParts),
-                    directArguments: try arguments(from: declarationSyntax.arguments)
-                )
-            )
-        }
+        let metadataKind: Metadata.Kind = try {
+            if let closureExpr = declarationSyntax.trailingClosure {
+                return .builder(content: try findComponents(in: closureExpr))
+            }
+            
+            return .plain
+        }()
+        
+        return Metadata(
+            token: token(from: declarationParts),
+            kind: metadataKind,
+            arguments: try arguments(from: declarationSyntax.arguments)
+        )
     }
     
     func token(from syntax: DeclReferenceExprSyntax) -> String {
@@ -123,7 +118,7 @@ extension WidgetDecoder{
         throw Error.unsupportedArgumentKind
     }
     
-    func findComponents(in closureSyntax: ClosureExprSyntax) throws -> [WidgetDeclaration] {
+    func findComponents(in closureSyntax: ClosureExprSyntax) throws -> [Metadata] {
         try items(of: closureSyntax.statements).map { codeBlock in
             try widgetDeclaration(
                 from: try declarationSyntax(

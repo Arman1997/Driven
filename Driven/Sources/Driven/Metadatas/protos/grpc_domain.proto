@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+message MetadataMessage {
+    
+    message PlainMetadata {}
+    message BuilderMetadata {
+        repeated MetadataMessage content = 1;
+    }
+    
+    string id = 1;
+    
+    oneof Kind {
+        PlainMetadata plain = 2;
+        BuilderMetadata builder = 3;
+    }
+    
+    repeated ArgumentMessage arguments = 4;
+    string token = 5;
+    
+}
+
+message ArgumentKindMessage {
+    oneof value {
+        string string_value = 1;
+        int32 int_value = 2;
+    }
+}
+
+message ArgumentMessage {
+    string name = 1;
+    ArgumentKindMessage kind = 2;
+}
