@@ -6,27 +6,32 @@ final class WidgetDecoderTests: XCTestCase {
     
     func test_GivenSourceCode_WhenDecode_ThenExpectedWidget() throws {
         XCTAssertTrue(
-            compare(
             try generatedOutput(
                 for: .text("Some")
-            ), Metadata(
-                token: "Text",
-                kind: .plain,
-                arguments: [
+            )
+            .parameterizedCompare(
+                MetadataVariant.plain(
                     .init(
-                        name: "",
-                        value: .init(kind: .string("Some"))
+                        token: "Text",
+                        arguments: [
+                            .init(
+                                name: "",
+                                kind: .string("Some")
+                            )
+                        ]
                     )
-                ]
-            ))
+                )
+            )
         )
     }
 }
 
 private extension WidgetDecoderTests {
     
-    func generatedOutput(for codeExample: SourceCodeExamples) throws -> Metadata {
-        try sut.decode(from: codeExample.description)
+    func generatedOutput(for codeExample: SourceCodeExamples) throws -> MetadataVariant {
+       let variant =  try sut.decode(from: codeExample.description)
+        print(variant)
+        return variant
     }
     
     enum SourceCodeExamples: CustomStringConvertible {
@@ -45,11 +50,5 @@ private extension WidgetDecoderTests {
                 """
             }
         }
-    }
-    
-    func compare(_ lhs: Metadata, _ rhs: Metadata) -> Bool {
-        return lhs.kind == rhs.kind &&
-        lhs.token == rhs.token &&
-        lhs.arguments == rhs.arguments
     }
 }

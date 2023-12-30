@@ -1,22 +1,27 @@
 syntax = "proto3";
 
-message MetadataMessage {
+message MetadataVariantMessage {
     
-    message PlainMetadata {}
-    message BuilderMetadata {
-        repeated MetadataMessage content = 1;
+    message Metadata {
+        string token = 1;
+        repeated ArgumentMessage arguments = 2;
     }
     
-    string id = 1;
+    message BuilderMetadata {
+        Metadata  metadata = 1;
+        repeated MetadataVariantMessage content = 2;
+    }
     
     oneof Kind {
-        PlainMetadata plain = 2;
-        BuilderMetadata builder = 3;
+        Metadata plain = 1;
+        BuilderMetadata builder = 2;
     }
-    
-    repeated ArgumentMessage arguments = 4;
-    string token = 5;
-    
+}
+
+
+message ArgumentMessage {
+    string name = 1;
+    ArgumentKindMessage kind = 2;
 }
 
 message ArgumentKindMessage {
@@ -24,9 +29,4 @@ message ArgumentKindMessage {
         string string_value = 1;
         int32 int_value = 2;
     }
-}
-
-message ArgumentMessage {
-    string name = 1;
-    ArgumentKindMessage kind = 2;
 }

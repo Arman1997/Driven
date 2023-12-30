@@ -20,43 +20,37 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
-struct MetadataMessage {
+struct MetadataVariantMessage {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var id: String = String()
+  var kind: MetadataVariantMessage.OneOf_Kind? = nil
 
-  var kind: MetadataMessage.OneOf_Kind? = nil
-
-  var plain: MetadataMessage.PlainMetadata {
+  var plain: MetadataVariantMessage.Metadata {
     get {
       if case .plain(let v)? = kind {return v}
-      return MetadataMessage.PlainMetadata()
+      return MetadataVariantMessage.Metadata()
     }
     set {kind = .plain(newValue)}
   }
 
-  var builder: MetadataMessage.BuilderMetadata {
+  var builder: MetadataVariantMessage.BuilderMetadata {
     get {
       if case .builder(let v)? = kind {return v}
-      return MetadataMessage.BuilderMetadata()
+      return MetadataVariantMessage.BuilderMetadata()
     }
     set {kind = .builder(newValue)}
   }
 
-  var arguments: [ArgumentMessage] = []
-
-  var token: String = String()
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_Kind: Equatable {
-    case plain(MetadataMessage.PlainMetadata)
-    case builder(MetadataMessage.BuilderMetadata)
+    case plain(MetadataVariantMessage.Metadata)
+    case builder(MetadataVariantMessage.BuilderMetadata)
 
   #if !swift(>=4.1)
-    static func ==(lhs: MetadataMessage.OneOf_Kind, rhs: MetadataMessage.OneOf_Kind) -> Bool {
+    static func ==(lhs: MetadataVariantMessage.OneOf_Kind, rhs: MetadataVariantMessage.OneOf_Kind) -> Bool {
       // The use of inline closures is to circumvent an issue where the compiler
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
@@ -75,10 +69,14 @@ struct MetadataMessage {
   #endif
   }
 
-  struct PlainMetadata {
+  struct Metadata {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
+
+    var token: String = String()
+
+    var arguments: [ArgumentMessage] = []
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -90,14 +88,48 @@ struct MetadataMessage {
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
-    var content: [MetadataMessage] = []
+    var metadata: MetadataVariantMessage.Metadata {
+      get {return _metadata ?? MetadataVariantMessage.Metadata()}
+      set {_metadata = newValue}
+    }
+    /// Returns true if `metadata` has been explicitly set.
+    var hasMetadata: Bool {return self._metadata != nil}
+    /// Clears the value of `metadata`. Subsequent reads from it will return its default value.
+    mutating func clearMetadata() {self._metadata = nil}
+
+    var content: [MetadataVariantMessage] = []
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
+
+    fileprivate var _metadata: MetadataVariantMessage.Metadata? = nil
   }
 
   init() {}
+}
+
+struct ArgumentMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var name: String = String()
+
+  var kind: ArgumentKindMessage {
+    get {return _kind ?? ArgumentKindMessage()}
+    set {_kind = newValue}
+  }
+  /// Returns true if `kind` has been explicitly set.
+  var hasKind: Bool {return self._kind != nil}
+  /// Clears the value of `kind`. Subsequent reads from it will return its default value.
+  mutating func clearKind() {self._kind = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _kind: ArgumentKindMessage? = nil
 }
 
 struct ArgumentKindMessage {
@@ -152,49 +184,23 @@ struct ArgumentKindMessage {
   init() {}
 }
 
-struct ArgumentMessage {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var name: String = String()
-
-  var kind: ArgumentKindMessage {
-    get {return _kind ?? ArgumentKindMessage()}
-    set {_kind = newValue}
-  }
-  /// Returns true if `kind` has been explicitly set.
-  var hasKind: Bool {return self._kind != nil}
-  /// Clears the value of `kind`. Subsequent reads from it will return its default value.
-  mutating func clearKind() {self._kind = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _kind: ArgumentKindMessage? = nil
-}
-
 #if swift(>=5.5) && canImport(_Concurrency)
-extension MetadataMessage: @unchecked Sendable {}
-extension MetadataMessage.OneOf_Kind: @unchecked Sendable {}
-extension MetadataMessage.PlainMetadata: @unchecked Sendable {}
-extension MetadataMessage.BuilderMetadata: @unchecked Sendable {}
+extension MetadataVariantMessage: @unchecked Sendable {}
+extension MetadataVariantMessage.OneOf_Kind: @unchecked Sendable {}
+extension MetadataVariantMessage.Metadata: @unchecked Sendable {}
+extension MetadataVariantMessage.BuilderMetadata: @unchecked Sendable {}
+extension ArgumentMessage: @unchecked Sendable {}
 extension ArgumentKindMessage: @unchecked Sendable {}
 extension ArgumentKindMessage.OneOf_Value: @unchecked Sendable {}
-extension ArgumentMessage: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-extension MetadataMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = "MetadataMessage"
+extension MetadataVariantMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = "MetadataVariantMessage"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "id"),
-    2: .same(proto: "plain"),
-    3: .same(proto: "builder"),
-    4: .same(proto: "arguments"),
-    5: .same(proto: "token"),
+    1: .same(proto: "plain"),
+    2: .same(proto: "builder"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -203,9 +209,8 @@ extension MetadataMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
-      case 2: try {
-        var v: MetadataMessage.PlainMetadata?
+      case 1: try {
+        var v: MetadataVariantMessage.Metadata?
         var hadOneofValue = false
         if let current = self.kind {
           hadOneofValue = true
@@ -217,8 +222,8 @@ extension MetadataMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
           self.kind = .plain(v)
         }
       }()
-      case 3: try {
-        var v: MetadataMessage.BuilderMetadata?
+      case 2: try {
+        var v: MetadataVariantMessage.BuilderMetadata?
         var hadOneofValue = false
         if let current = self.kind {
           hadOneofValue = true
@@ -230,8 +235,6 @@ extension MetadataMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
           self.kind = .builder(v)
         }
       }()
-      case 4: try { try decoder.decodeRepeatedMessageField(value: &self.arguments) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.token) }()
       default: break
       }
     }
@@ -242,62 +245,32 @@ extension MetadataMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.id.isEmpty {
-      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
-    }
     switch self.kind {
     case .plain?: try {
       guard case .plain(let v)? = self.kind else { preconditionFailure() }
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     }()
     case .builder?: try {
       guard case .builder(let v)? = self.kind else { preconditionFailure() }
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
     }()
     case nil: break
     }
-    if !self.arguments.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.arguments, fieldNumber: 4)
-    }
-    if !self.token.isEmpty {
-      try visitor.visitSingularStringField(value: self.token, fieldNumber: 5)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: MetadataMessage, rhs: MetadataMessage) -> Bool {
-    if lhs.id != rhs.id {return false}
+  static func ==(lhs: MetadataVariantMessage, rhs: MetadataVariantMessage) -> Bool {
     if lhs.kind != rhs.kind {return false}
-    if lhs.arguments != rhs.arguments {return false}
-    if lhs.token != rhs.token {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-extension MetadataMessage.PlainMetadata: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = MetadataMessage.protoMessageName + ".PlainMetadata"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let _ = try decoder.nextFieldNumber() {
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: MetadataMessage.PlainMetadata, rhs: MetadataMessage.PlainMetadata) -> Bool {
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-extension MetadataMessage.BuilderMetadata: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = MetadataMessage.protoMessageName + ".BuilderMetadata"
+extension MetadataVariantMessage.Metadata: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = MetadataVariantMessage.protoMessageName + ".Metadata"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "content"),
+    1: .same(proto: "token"),
+    2: .same(proto: "arguments"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -306,21 +279,110 @@ extension MetadataMessage.BuilderMetadata: SwiftProtobuf.Message, SwiftProtobuf.
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.content) }()
+      case 1: try { try decoder.decodeSingularStringField(value: &self.token) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.arguments) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.content.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.content, fieldNumber: 1)
+    if !self.token.isEmpty {
+      try visitor.visitSingularStringField(value: self.token, fieldNumber: 1)
+    }
+    if !self.arguments.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.arguments, fieldNumber: 2)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: MetadataMessage.BuilderMetadata, rhs: MetadataMessage.BuilderMetadata) -> Bool {
+  static func ==(lhs: MetadataVariantMessage.Metadata, rhs: MetadataVariantMessage.Metadata) -> Bool {
+    if lhs.token != rhs.token {return false}
+    if lhs.arguments != rhs.arguments {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension MetadataVariantMessage.BuilderMetadata: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = MetadataVariantMessage.protoMessageName + ".BuilderMetadata"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "metadata"),
+    2: .same(proto: "content"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._metadata) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.content) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._metadata {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    if !self.content.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.content, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: MetadataVariantMessage.BuilderMetadata, rhs: MetadataVariantMessage.BuilderMetadata) -> Bool {
+    if lhs._metadata != rhs._metadata {return false}
     if lhs.content != rhs.content {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension ArgumentMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = "ArgumentMessage"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "name"),
+    2: .same(proto: "kind"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._kind) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 1)
+    }
+    try { if let v = self._kind {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: ArgumentMessage, rhs: ArgumentMessage) -> Bool {
+    if lhs.name != rhs.name {return false}
+    if lhs._kind != rhs._kind {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -381,48 +443,6 @@ extension ArgumentKindMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
 
   static func ==(lhs: ArgumentKindMessage, rhs: ArgumentKindMessage) -> Bool {
     if lhs.value != rhs.value {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-extension ArgumentMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = "ArgumentMessage"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .same(proto: "kind"),
-  ]
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.name) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._kind) }()
-      default: break
-      }
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.name.isEmpty {
-      try visitor.visitSingularStringField(value: self.name, fieldNumber: 1)
-    }
-    try { if let v = self._kind {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: ArgumentMessage, rhs: ArgumentMessage) -> Bool {
-    if lhs.name != rhs.name {return false}
-    if lhs._kind != rhs._kind {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

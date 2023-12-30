@@ -2,11 +2,11 @@ import SwiftSyntax
 import SwiftParser
 
 protocol WidgetMetadataDecoding {
-    func decode(from code: String) throws -> Metadata
+    func decode(from code: String) throws -> MetadataVariant
 }
 
 struct WidgetMetadataDecoder: WidgetMetadataDecoding {
-    func decode(from code: String) throws -> Metadata {
+    func decode(from code: String) throws -> MetadataVariant {
         try widgetDeclaration(
             from: try declarationSyntax(
                 in: try mainCodeBlock(
@@ -51,7 +51,7 @@ extension WidgetMetadataDecoder{
         return funcCallSyntax
     }
     
-    func widgetDeclaration(from declarationSyntax: FunctionCallExprSyntax) throws -> Metadata {
+    func widgetDeclaration(from declarationSyntax: FunctionCallExprSyntax) throws -> MetadataVariant {
         guard let declarationParts = declarationSyntax
             .calledExpression
             .as(DeclReferenceExprSyntax.self)
@@ -59,30 +59,32 @@ extension WidgetMetadataDecoder{
             throw Error.declarationReferenceNotFound
         }
         
-        let metadataKind: Metadata.Kind = try {
-            if let closureExpr = declarationSyntax.trailingClosure {
-                return .builder(content: try findComponents(in: closureExpr))
-            }
-            
-            return .plain
-        }()
-        
-        return Metadata(
+        let metadata = MetadataVariant.Metadata(
             token: token(from: declarationParts),
-            kind: metadataKind,
             arguments: try arguments(from: declarationSyntax.arguments)
         )
+        
+        if let closureExpr = declarationSyntax.trailingClosure {
+            return .builder(
+                .init(
+                    metadata: metadata,
+                    content: try findComponents(in: closureExpr)
+                )
+            )
+        } else {
+            return .plain(metadata)
+        }
     }
     
     func token(from syntax: DeclReferenceExprSyntax) -> String {
         syntax.baseName.text
     }
     
-    func arguments(from syntax: LabeledExprListSyntax) throws -> [Argument] {
+    func arguments(from syntax: LabeledExprListSyntax) throws -> [MetadataVariant.Metadata.Argument] {
         try Array(syntax).map { argumentNode in
-            Argument(
+            MetadataVariant.Metadata.Argument(
                 name: name(of: argumentNode),
-                value: try value(of: argumentNode)
+                kind: try kind(of: argumentNode)
             )
         }
     }
@@ -91,34 +93,30 @@ extension WidgetMetadataDecoder{
         argument.label?.text ?? ""
     }
     
-    func value(of argument: LabeledExprSyntax) throws -> ArgumentValue {
+    func kind(of argument: LabeledExprSyntax) throws -> MetadataVariant.Metadata.Argument.Kind {
         if let intLiteral = argument.expression.as(IntegerLiteralExprSyntax.self) {
-            return .init(
-                kind: .int(
-                    Int(intLiteral.literal.text)!
-                )
+            return  .int(
+                Int(intLiteral.literal.text)!
             )
         } else if let stringLiteral = argument.expression.as(StringLiteralExprSyntax.self) {
-            return .init(
-                kind: .string(
-                    Array(
-                        stringLiteral.segments
-                    )
-                    .compactMap {
-                        $0.as(StringSegmentSyntax.self)
-                    }
-                    .map {
-                        $0.content.text
-                    }
-                    .joined()
+            return .string(
+                Array(
+                    stringLiteral.segments
                 )
+                .compactMap {
+                    $0.as(StringSegmentSyntax.self)
+                }
+                .map {
+                    $0.content.text
+                }
+                .joined()
             )
         }
         
         throw Error.unsupportedArgumentKind
     }
     
-    func findComponents(in closureSyntax: ClosureExprSyntax) throws -> [Metadata] {
+    func findComponents(in closureSyntax: ClosureExprSyntax) throws -> [MetadataVariant] {
         try items(of: closureSyntax.statements).map { codeBlock in
             try widgetDeclaration(
                 from: try declarationSyntax(
