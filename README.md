@@ -11,4 +11,4 @@ Empowering Swift Views with Backend-Driven Dynamics
 
 
 ## Overview
-Driven is a Swift library designed to seamlessly integrate backend-driven dynamics into your Swift views. As an evolving project still in its early stages, Driven aims to simplify the process of connecting your frontend to the backend, enabling dynamic updates and data-driven UI changes with minimal effort (at least from BE side).
+Driven is a Swift library designed to seamlessly integrate backend-driven dynamics into your Swift views. As an evolving project still in its early stages, Driven aims to simplify the process of connecting your frontend to the backend, enabling dynamic updates and data-driven UI changes with minimal effort.
