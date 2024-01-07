@@ -1,12 +1,14 @@
 import SwiftSyntax
 import SwiftParser
 
-protocol WidgetMetadataDecoding {
+public protocol WidgetMetadataDecoding {
     func decode(from code: String) throws -> MetadataVariant
 }
 
-struct WidgetMetadataDecoder: WidgetMetadataDecoding {
-    func decode(from code: String) throws -> MetadataVariant {
+public struct WidgetMetadataDecoder: WidgetMetadataDecoding {
+    public init() {}
+    
+    public func decode(from code: String) throws -> MetadataVariant {
         try widgetDeclaration(
             from: try declarationSyntax(
                 in: try mainCodeBlock(

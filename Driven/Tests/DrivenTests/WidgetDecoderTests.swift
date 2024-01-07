@@ -5,7 +5,7 @@ final class WidgetDecoderTests: XCTestCase {
     private let sut: WidgetMetadataDecoding = WidgetMetadataDecoder()
     
     func test_GivenSourceCode_WhenDecode_ThenExpectedWidget() throws {
-        XCTAssertTrue(
+        XCTAssert(
             try generatedOutput(
                 for: .text("Some")
             )

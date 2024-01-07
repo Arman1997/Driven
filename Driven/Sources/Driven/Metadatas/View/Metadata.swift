@@ -1,21 +1,13 @@
 import Foundation
 
-enum MetadataVariant {
-    
+public enum MetadataVariant {
+    case plain(Metadata)
+    case builder(BuilderMetadata)
+}
+
+public extension MetadataVariant {
     struct Metadata {
-        
-        struct Argument {
-            
-            enum Kind {
-                case int(Int)
-                case string(String)
-            }
-            
-            let name: String
-            let kind: Kind
-        }
-        
-        let id: UUID = UUID()
+        public let id: UUID = UUID()
         let token: String
         let arguments: [Argument]
     }
@@ -24,14 +16,25 @@ enum MetadataVariant {
         let metadata: Metadata
         let content: [MetadataVariant]
     }
-    
-    case plain(Metadata)
-    case builder(BuilderMetadata)
+}
+
+public extension MetadataVariant.Metadata {
+    struct Argument {
+        let name: String
+        let kind: Kind
+    }
+}
+
+public extension MetadataVariant.Metadata.Argument {
+    enum Kind {
+        case int(Int)
+        case string(String)
+    }
 }
 
 extension MetadataVariant: Equatable, Identifiable, ProtobufMessageDecodable, ParameterizedComparable {
 
-    var id: UUID {
+    public var id: UUID {
         switch self {
         case .plain(let metadata):
             return metadata.id
@@ -82,7 +85,7 @@ extension MetadataVariant.Metadata: Equatable, Identifiable, ProtobufMessageDeco
 
 extension MetadataVariant.BuilderMetadata: Equatable, Identifiable, ProtobufMessageDecodable, ParameterizedComparable {
 
-    var id: UUID {
+    public var id: UUID {
         metadata.id
     }
     
