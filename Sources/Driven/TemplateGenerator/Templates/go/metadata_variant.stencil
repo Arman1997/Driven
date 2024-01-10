@@ -1,0 +1,6 @@
+{% if metadata.plain %}
+{% include "plain_metadata.stencil" %}
+{% endif %}
+{% if metadata.builder %}
+{% include "builder_metadata.stencil" builder %}
+{% endif %}

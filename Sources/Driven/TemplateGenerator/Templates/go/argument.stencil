@@ -1,0 +1,11 @@
+{
+    Name: {% if argument.name == "" %}""{% endif %}{{argument.name}},
+    Kind: &protos.ArgumentKindMessage { {%if argument.kind.string %}
+        Value: &protos.ArgumentKindMessage_StringValue{
+            StringValue: "{{argument.kind.string._0}}",
+        },{%endif%} {%if argument.kind.int %}
+        Value: &protos.ArgumentKindMessage_IntValue{
+            IntValue: {{argument.kind.int._0}},
+        },{%endif%}
+    },
+}

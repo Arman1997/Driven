@@ -1,0 +1,9 @@
+&protos.MetadataVariantMessage {
+    Kind: &protos.MetadataVariantMessage_Plain {
+        Plain: &protos.MetadataVariantMessage_Metadata {
+            Token: "{{metadata.plain._0.token}}",
+            Arguments: []*protos.ArgumentMessage { {% for argument in metadata.plain._0.arguments %} {% include "argument.stencil" %},{% endfor %}
+            },
+        },
+    },
+}

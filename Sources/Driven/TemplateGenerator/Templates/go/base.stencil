@@ -1,0 +1,3 @@
+{% for metadata in metadatas %}
+{% include  "metadata_variant.stencil" %}
+{% endfor %}

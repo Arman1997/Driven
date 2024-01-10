@@ -1,0 +1,14 @@
+&protos.MetadataVariantMessage{
+    Kind: &protos.MetadataVariantMessage_Builder{
+        Builder: &protos.MetadataVariantMessage_BuilderMetadata{
+            Metadata: &protos.MetadataVariantMessage_Metadata{
+                Token: "{{ metadata.builder._0.metadata.token }}",
+                Arguments: []*protos.ArgumentMessage{ {% for argument in metadata.builder._0.metadata.arguments %}
+                    {% include "argument.stencil" %},{% endfor %}
+                },
+            },
+            Content: []*protos.MetadataVariantMessage {{% for metadata in metadata.builder._0.content %}{% include "metadata_variant.stencil" %},{%endfor%}
+            },
+        },
+    },
+}

@@ -140,3 +140,9 @@ extension MetadataVariant.Metadata.Argument.Kind: Equatable, ProtobufMessageDeco
     }
 
 }
+
+extension MetadataVariant: Encodable {}
+extension MetadataVariant.Metadata: Encodable {}
+extension MetadataVariant.BuilderMetadata: Encodable {}
+extension MetadataVariant.Metadata.Argument: Encodable {}
+extension MetadataVariant.Metadata.Argument.Kind: Encodable {}
